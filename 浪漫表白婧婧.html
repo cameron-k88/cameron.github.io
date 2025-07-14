@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给婧婧的表白</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .petal {
+            position: absolute;
+            pointer-events: none;
+            animation: float 5s linear infinite;
+        }
+        
+        .fade-in {
+            animation: fadeIn 2s ease-in forwards;
+        }
+        
+        .bg-blur {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="https://lf-bot-studio-plugin-resource.coze.cn/obj/bot-studio-platform-plugin-tos/artist/image/b8bafe7224c646c38c6f81cc277f3674.wav" type="audio/wav">
+    </audio>
+    
+    <!-- 首页 -->
+    <section class="min-h-screen bg-cover bg-center flex items-center justify-center relative" style="background-image: url('https://p3-search.byteimg.com/obj/labis/5ebd5472e367ba45b6d2e4ced7bfd0ab')">
+        <div class="absolute inset-0 bg-gradient-to-b from-purple-900/30 to-pink-900/30"></div>
+        
+        <div class="text-center z-10 px-4">
+            <h1 class="text-5xl md:text-7xl font-bold text-white fade-in" style="text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                婧婧，我好喜欢你呀！
+            </h1>
+            <p class="text-xl md:text-2xl text-white mt-6 fade-in" style="animation-delay: 0.5s; text-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                每一天都比昨天更爱你 ❤️
+            </p>
+            
+            <button id="musicToggle" class="mt-12 bg-white/20 hover:bg-white/30 text-white rounded-full p-4 transition-all duration-300 fade-in" style="animation-delay: 1s;">
+                <i class="fas fa-music text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="heartsContainer"></div>
+    </section>
+    
+    <!-- 星空爱心部分 -->
+    <section class="min-h-screen bg-cover bg-center flex items-center justify-center relative" style="background-image: url('https://p3-search.byteimg.com/obj/labis/4dd9da398f18dee26c108e610299bb97')">
+        <div class="absolute inset-0 bg-gradient-to-b from-blue-900/30 to-purple-900/30"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 py-20 z-10">
+            <div class="bg-white/20 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
+                    像星空一样永恒的爱
+                </h2>
+                <p class="text-lg md:text-xl text-white text-center">
+                    每一颗星星都代表我对你的思念<br>
+                    每一片星空都见证我对你的爱意
+                </p>
+            </div>
+        </div>
+        
+        <div id="petalsContainer"></div>
+    </section>
+    
+    <!-- 沙滩心形部分 -->
+    <section class="min-h-screen bg-cover bg-center flex items-center justify-center relative" style="background-image: url('https://p3-search.byteimg.com/obj/labis/e7d0b94dd283c6337d5827e7c937c160')">
+        <div class="absolute inset-0 bg-gradient-to-b from-pink-900/20 to-purple-900/20"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 py-20 z-10">
+            <div class="bg-white/20 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
+                    像沙滩一样绵长的情
+                </h2>
+                <p class="text-lg md:text-xl text-white text-center">
+                    每一粒沙子都记录我们的故事<br>
+                    每一道海浪都传递我的心声
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页脚 -->
+    <footer class="bg-gradient-to-r from-purple-900 to-pink-700 py-8 text-white text-center">
+        <p class="mb-2">Created with ❤️ for Vivian</p>
+        <p class="text-sm opacity-80">爱你的卡宝！~</p>
+        <p class="text-sm mt-4">
+            <a href="https://space.coze.cn" class="underline hover:no-underline">coze space</a>
+        </p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 音乐控制
+            const music = document.getElementById('bgMusic');
+            const musicToggle = document.getElementById('musicToggle');
+            let isPlaying = false;
+            
+            // 尝试自动播放音乐（可能会被浏览器阻止）
+            music.volume = 0.5;
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    isPlaying = true;
+                    musicToggle.innerHTML = '<i class="fas fa-pause text-2xl"></i>';
+                }).catch(error => {
+                    isPlaying = false;
+                    musicToggle.innerHTML = '<i class="fas fa-music text-2xl"></i>';
+                });
+            }
+            
+            musicToggle.addEventListener('click', function() {
+                if (isPlaying) {
+                    music.pause();
+                    musicToggle.innerHTML = '<i class="fas fa-music text-2xl"></i>';
+                } else {
+                    music.play();
+                    musicToggle.innerHTML = '<i class="fas fa-pause text-2xl"></i>';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // 爱心点击效果
+            document.addEventListener('click', function(e) {
+                createHeart(e.clientX, e.clientY);
+            });
+            
+            function createHeart(x, y) {
+                const heart = document.createElement('div');
+                heart.className = 'heart text-pink-500 text-2xl';
+                heart.innerHTML = '❤️';
+                heart.style.left = (x - 15) + 'px';
+                heart.style.top = (y - 15) + 'px';
+                heart.style.opacity = '0.8';
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.style.transform = 'scale(1.5)';
+                    heart.style.opacity = '0';
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 500);
+                }, 1000);
+            }
+            
+            // 花瓣飘落效果
+            function createPetal() {
+                const petal = document.createElement('div');
+                petal.className = 'petal text-pink-300 text-xl';
+                petal.innerHTML = '❀';
+                petal.style.left = Math.random() * window.innerWidth + 'px';
+                petal.style.top = '-30px';
+                petal.style.opacity = Math.random() * 0.6 + 0.2;
+                petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                petal.style.animationDelay = Math.random() * 5 + 's';
+                
+                document.body.appendChild(petal);
+                
+                setTimeout(() => {
+                    petal.remove();
+                }, 10000);
+            }
+            
+            // 定期生成花瓣
+            setInterval(createPetal, 500);
+            
+            // 初始生成一些爱心
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createHeart(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }, i * 300);
+            }
+        });
+    </script>
+</body>
+</html>
